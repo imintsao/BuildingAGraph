@@ -12,6 +12,7 @@ public class GraphImin : MonoBehaviour
     int resolution = 10;
 
     //[SerializeField, Range(0, 2)]
+
     [SerializeField]
 
     FunctionLibraryImin.FunctionName function;
@@ -28,26 +29,26 @@ public class GraphImin : MonoBehaviour
         //Vector3 position;
         //var scale = Vector3.one / 5f;
         var scale = Vector3.one * step;
-        var position = Vector3.zero;
+        //var position = Vector3.zero;
         points = new Transform [resolution * resolution];
-        for (int i = 0, x = 0, z = 0; i < points.Length; i++, x++) {
-            if (x == resolution)
-            {
-                x = 0;
-                z += 1;
-            }
-            Transform point = points[i] = Instantiate(pointPrefab);
+        for (int i = 0; i < points.Length; i++) {
+            //if (x == resolution)
+            //{
+            //    x = 0;
+            //    z += 1;
+            //}
+            Transform point = Instantiate(pointPrefab);
             //point.localPosition = Vector3.right * i;
             //point.localPosition = Vector3.right * i / 5f;
             //point.localPosition = Vector3.right * ((i + 0.5f) / 5f - 1f);
             //point.localScale = Vector3.one / 5f;
             //position.x = (i + 0.5f) / 5f - 1f;
-            position.x = (x + 0.5f) * step - 1f;
-            position.z = (z + 0.5f) * step - 1f;
+            //position.x = (x + 0.5f) * step - 1f;
+            //position.z = (z + 0.5f) * step - 1f;
                 //position.y = position.x; //(becomes like a stair)
             //position.y = position.x * position.x; //(becomes like a curve)
-            position.y = position.x * position.x * position.x; //why using Y?
-            point.localPosition = position;
+            //position.y = position.x * position.x * position.x; //why using Y?
+            //point.localPosition = position;
             point.localScale = scale;
             point.SetParent(transform, false);
             points[i] = point;
@@ -60,7 +61,7 @@ public class GraphImin : MonoBehaviour
 
     }
 
-    private void Update()
+    /*private void Update()
     {
         FunctionLibraryImin.Function f = FunctionLibraryImin.GetFunction(function);
         float time = Time.time;
@@ -87,6 +88,30 @@ public class GraphImin : MonoBehaviour
             //}
             position.y = f(position.x, position.z, time);
             point.localPosition = position;
+        }
+    }*/
+
+    private void Update()
+    {
+        FunctionLibraryImin.Function f = FunctionLibraryImin.GetFunction(function);
+        float time = Time.time;
+        float step = 2f / resolution;
+        float v = 0.5f * step - 1f;
+        
+        for (int i = 0, x = 0, z = 0; i< points.Length; i++, x++)
+        {
+            if (x == resolution)
+            {
+                x = 0;
+                z += 1;
+                v = (z + 0.5f) * step - 1f;
+
+
+            }
+            float u = (x + 0.5f) * step - 1f;
+            //float v = (z + 0.5f) * step - 1f;
+            
+            points[i].localPosition = f(u, v, time);
         }
     }
 }
